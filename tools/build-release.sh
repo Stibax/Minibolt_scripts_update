@@ -41,6 +41,15 @@ fi
 COMMIT="$(git rev-parse HEAD)"
 echo "    commit: ${COMMIT}"
 
+# 1b) una release pubblicata e' immutabile: se il tag esiste, questo archivio non
+#     sarebbe quello che la gente ha scaricato -> serve un numero di versione nuovo
+if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
+  NEXT="${VERSION%.*}.$(( ${VERSION##*.} + 1 ))"
+  die "il tag v${VERSION} esiste già: quella release è pubblicata e immutabile.
+      Ricostruirla qui darebbe un archivio DIVERSO con lo stesso nome.
+      Aggiorna CHANGELOG e README (comandi di download) a ${NEXT} e riprova."
+fi
+
 # 2) la versione deve comparire nel README (i comandi di download la citano)
 for r in README.md README.en.md; do
   grep -q "minibolt-update-scripts-${VERSION}.tar.gz" "$r" \
