@@ -46,6 +46,25 @@ Cosa non fanno:
   `sudo`, letta da `sudo` stesso e usata solo per la durata dello script;
 - non scaricano ed eseguono script remoti (`curl | bash` non esiste, qui).
 
+## Postura di sicurezza del repository
+
+Non è verificabile solo il pacchetto: anche il repository è configurato perché quello che hai già scaricato **non possa cambiare sotto i piedi**.
+
+| Impostazione | Stato | Perché |
+|---|---|---|
+| **Release immutabili** | attiva | una release pubblicata, con i suoi asset, non si può più modificare né cancellare: se serve un cambiamento si pubblica una versione nuova, e la 1.1 resta quella che hai verificato |
+| **Ruleset `main protetto`** | attivo | `main` non si può cancellare né riscrivere con un force-push; i push normali restano possibili |
+| **Ruleset `tag v*`** | attivo | i tag non si possono spostare su un altro commit né cancellare, e **devono** essere firmati (`Require signed commits`): un tag firmato una volta non può diventare un altro commit |
+| **Actions disattivate** | — | nessuna CI: un'automazione che firmasse avrebbe bisogno della chiave privata nei secret di GitHub, cioè dell'unica cosa che non deve uscire dalla smartcard |
+| **Secret scanning + push protection** | attivi | se un domani un file con un segreto finisse in un commit, GitHub ferma il push |
+| **Private vulnerability reporting** | attivo | il canale privato per segnalare un problema, senza aprire una issue pubblica |
+| **Nessun collaboratore, nessun token** | — | l'unico accesso in scrittura è una **deploy key limitata a questo repository** (non all'account) |
+| **Features** | Issues on; Wiki, Projects, Discussions off | meno superficie: una sola porta per le segnalazioni |
+
+**Conseguenza pratica**: se un file di questo repository apparisse cambiato senza una release nuova, o un tag puntasse a un commit diverso, è un'**anomalia** — il repository non lo permette. E vale la pena dirlo perché è la differenza fra "mi fido di quello che c'è adesso" e "posso verificare quello che c'era quando l'ho scaricato".
+
+> I commit del ramo `main` **non** sono firmati: la build e il push li fa una macchina separata, quindi non c'è una chiave di firma dei commit da custodire. La garanzia crittografica sta sul **tag** e sull'**archivio**, entrambi firmati, con il tag vincolato al commit. La catena è: *contenuto → manifest verificato → archivio firmato → tag firmato → commit*.
+
 ## Segnalare un problema
 
 - **Problema di sicurezza** (uno script può installare qualcosa di non

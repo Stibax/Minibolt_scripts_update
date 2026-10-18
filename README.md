@@ -255,6 +255,7 @@ Regole d'uso:
 - **Le password non vengono mai salvate**: né su disco, né in file di log, né nella history, né in variabili d'ambiente. Non viene usato `sudo -S` né alcuna pipe con la password: l'autenticazione passa dal prompt nativo di `sudo`.
 - Gli script **non** modificano la tua configurazione: `bitcoin.conf`, `electrs.conf`, `.env` e le unit systemd restano come sono. Non toccano le directory dati (a parte quelle di build).
 - Un **Ctrl-C** (tipico sull'ultimo `journalctl -fu`) viene segnalato come `Terminato da un segnale (exit 130)`, **non** come errore: quello che era già stato fatto resta valido e puoi rilanciare lo stesso script.
+- **Anche il repository è blindato**, non solo il pacchetto: release immutabili, tag firmati obbligatori e non spostabili, nessuna automazione. È il motivo per cui una release già scaricata non può cambiare sotto i piedi — dettagli in [`SECURITY.md`](SECURITY.md) §«Postura di sicurezza del repository».
 
 ---
 
