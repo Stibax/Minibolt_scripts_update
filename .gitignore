@@ -1,0 +1,13 @@
+# Artefatti generati da tools/build-release.sh: NON stanno nel tree.
+# Il manifest (SHA256SUMS.txt) vive DENTRO l'archivio, insieme ai file che descrive:
+# tenerne una copia anche qui e' la ricetta per farlo andare fuori sincrono.
+/dist/
+*.tar.gz
+*.tar.gz.sha256
+*.tar.gz.asc
+SHA256SUMS.txt
+
+# robaccia di lavoro
+*.swp
+*~
+.DS_Store

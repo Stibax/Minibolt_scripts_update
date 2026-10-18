@@ -1,0 +1,8 @@
+# Gli script girano sul nodo Linux: qualunque sia il sistema da cui si scarica,
+# il file in working tree deve avere terminazioni LF (CRLF rompe lo shebang).
+* text=auto eol=lf
+
+# La chiave pubblica ASCII-armored e gli archivi non vanno toccati.
+*.asc  -text
+*.gpg  -text
+*.tar.gz -text
