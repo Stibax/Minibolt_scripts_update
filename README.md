@@ -1,4 +1,5 @@
-> [!note] 🇬🇧 [English version ↓](#english-version)
+> [!NOTE]
+> 🇬🇧 [English version ↓](#english-version)
 
 # MiniBolt — script di aggiornamento
 
@@ -6,13 +7,15 @@
 
 Cinque script bash che aggiornano un nodo [MiniBolt](https://minibolt.minibolt.info) riproducendo **passo per passo** le procedure della guida ufficiale: gli stessi comandi, nello stesso ordine, come se venissero copiati e incollati uno per uno nel terminale — ma con i **controlli di firma e checksum bloccanti**: se una verifica non passa, lo script si ferma e **non installa niente**.
 
-> [!tip] Da dove arriva questo pacchetto
+> [!TIP]
+> Da dove arriva questo pacchetto
 > La distribuzione ufficiale è **questo repository**: ogni versione esce come **release firmata** (firma GPG + `sha256`), e le istruzioni per verificarla sono in **§3** — leggile prima di estrarre l'archivio.
 > - Chiave di firma, fingerprint, come segnalare un problema: [`SECURITY.md`](SECURITY.md)
 > - Cosa cambia in ogni versione: [`CHANGELOG.md`](CHANGELOG.md)
 > - Licenza: [MIT](LICENSE)
 
-> [!warning] Prima di iniziare — leggi qui
+> [!WARNING]
+> Prima di iniziare — leggi qui
 > Questi script **installano, compilano e riavviano servizi** sul tuo nodo, con `sudo`.
 > - Fai un **backup** (snapshot della VM o immagine del disco) prima di aggiornare. Su un nodo con canali Lightning attivi, valuta anche un backup del wallet.
 > - Sono pensati per un nodo installato **seguendo la guida MiniBolt**: se hai cambiato percorsi, utenti o unit systemd, adattali prima.
@@ -132,7 +135,8 @@ Deve uscire `Good signature from "Vladx <vladx@vladtech.org>"` e, subito dopo, i
 
 **Confronta quel fingerprint** con quello pubblicato in [`SECURITY.md`](SECURITY.md), in [`keys/README.md`](keys/README.md) e su [keys.openpgp.org](https://keys.openpgp.org/search?q=8CE3522D2DDF1EEE534919A4476EC75008474F71). Se non coincide, **non estrarre niente**.
 
-> [!note] `WARNING: This key is not certified with a trusted signature` è normale
+> [!NOTE]
+> `WARNING: This key is not certified with a trusted signature` è normale
 > `gpg` sta dicendo che *non ha verificato da solo* l'identità di quella chiave — non che la firma è falsa (`Good signature` è già passato). Quella verifica la fai tu, confrontando il fingerprint su un canale diverso da quello da cui hai scaricato l'archivio.
 
 ### 3.5 Verificare che l'archivio sia integro (prima di estrarlo)
@@ -150,7 +154,8 @@ sha256sum -c minibolt-update-scripts-1.1.tar.gz.sha256
 - `FAILED` o `No such file or directory` → il trasferimento è incompleto o corrotto: **ritrasferisci** (entrambi i file) e ripeti.
 - Confronta comunque l'hash con quello **pubblicato da chi ti ha dato il pacchetto** (nel messaggio, nella pagina di rilascio, nel README): così verifichi anche di aver ricevuto il file giusto e non una copia diversa.
 
-> [!note] Cosa protegge (e cosa no) questo controllo
+> [!NOTE]
+> Cosa protegge (e cosa no) questo controllo
 > Il `.sha256` serve a scoprire un **trasferimento andato storto** o un archivio modificato per errore. **Non** prova l'autenticità del pacchetto: chi può alterare l'archivio può alterare anche il suo `.sha256`. Per quello serve una **firma** di chi distribuisce (`gpg --verify`, se chi te lo passa la fornisce). Verifica sempre l'hash che ti è stato comunicato per un canale diverso da quello con cui hai scaricato l'archivio.
 
 ### 3.6 Estrarre e verificare i file
@@ -164,7 +169,8 @@ sha256sum -c SHA256SUMS.txt                         # tutte le righe devono dire
 
 Qui si controllano i **singoli file** dentro l'archivio (`SHA256SUMS.txt` è il manifest interno). Se una riga dice `FAILED`, il file è corrotto: riestrai da un archivio appena ritrasferito e ripeti.
 
-> [!warning] Non incollare il testo degli script nella shell
+> [!WARNING]
+> Non incollare il testo degli script nella shell
 > Le righe lunghe si spezzano nel copia/incolla e producono errori assurdi tipo `line 201: 201: command not found`. Trasferisci sempre i **file** (o l'archivio) e verifica con `sha256sum -c`.
 
 ---
@@ -263,7 +269,8 @@ Regole d'uso:
 
 ## 7. Gotcha e domande frequenti
 
-> [!warning] Electrs 0.12 richiede `rest=1` su bitcoind e una reindicizzazione
+> [!WARNING]
+> Electrs 0.12 richiede `rest=1` su bitcoind e una reindicizzazione
 > Electrs **0.12.0** è passato al motore `bindex`, che (1) richiede **Bitcoin Core 31+**, (2) usa l'interfaccia **REST** di bitcoind → serve **`rest=1`** in `bitcoin.conf`, e (3) ha un **nuovo formato di indice → va reindicizzato**.
 > Sintomo se manca `rest=1`: `GET http://127.0.0.1:8332/rest/blockhashbyheight/0.bin failed: StatusCode(404)` → `failed to open index` → servizio in `failed`. Con la 0.11.x questo non succedeva, perché il REST non veniva usato.
 
@@ -282,7 +289,8 @@ journalctl -fu electrs
 
 Finché l'indice non è completo, wallet e explorer danno errori su saldi e indirizzi: è normale. Il vecchio indice accantonato è spazio da recuperare **dopo** che la nuova indicizzazione è arrivata in fondo.
 
-> [!warning] `electrs` muore con `Too many open files` durante l'indicizzazione
+> [!WARNING]
+> `electrs` muore con `Too many open files` durante l'indicizzazione
 > Il soft limit dei file aperti è **1024**, ma RocksDB (`max_open_files=-1`) tiene aperto **un file per ogni SST** dell'indice — su un indice reale sono migliaia (≈3.700 file / ≈77 GB nel caso che ha originato questo preflight). Il processo esaurisce i descrittori e si ferma. La unit della guida non imposta `LimitNOFILE`, quindi il limite effettivo resta il default. Rimedio (una volta sola):
 >
 > ```bash
@@ -345,13 +353,15 @@ Licenza [MIT](LICENSE). Nessuna garanzia. Le procedure riprodotte sono quelle de
 
 Five bash scripts that update a [MiniBolt](https://minibolt.minibolt.info) node by reproducing **step by step** the procedures of the official guide: the same commands, in the same order, as if they were copied and pasted one by one into the terminal — but with **blocking signature and checksum checks**: if a verification does not pass, the script stops and **installs nothing**.
 
-> [!tip] Where this package comes from
+> [!TIP]
+> Where this package comes from
 > The official distribution channel is **this repository**: every version ships as a **signed release** (GPG signature + `sha256`), and the instructions to verify it are in **§3** — read them before extracting the archive.
 > - Signing key, fingerprint, how to report a problem: [`SECURITY.md`](SECURITY.md)
 > - What changes in each version: [`CHANGELOG.md`](CHANGELOG.md)
 > - License: [MIT](LICENSE)
 
-> [!warning] Before you start — read this
+> [!WARNING]
+> Before you start — read this
 > These scripts **install, compile and restart services** on your node, with `sudo`.
 > - Make a **backup** (VM snapshot or disk image) before updating. On a node with active Lightning channels, consider a wallet backup as well.
 > - They are meant for a node installed **following the MiniBolt guide**: if you changed paths, users or systemd units, adapt them first.
@@ -471,7 +481,8 @@ You must see `Good signature from "Vladx <vladx@vladtech.org>"` and, right after
 
 **Compare that fingerprint** with the one published in [`SECURITY.md`](SECURITY.md), in [`keys/README.md`](keys/README.md) and on [keys.openpgp.org](https://keys.openpgp.org/search?q=8CE3522D2DDF1EEE534919A4476EC75008474F71). If it does not match, **do not extract anything**.
 
-> [!note] `WARNING: This key is not certified with a trusted signature` is normal
+> [!NOTE]
+> `WARNING: This key is not certified with a trusted signature` is normal
 > `gpg` is saying that it has *not verified on its own* the identity of that key — not that the signature is fake (`Good signature` has already passed). That verification is up to you, comparing the fingerprint over a channel other than the one you downloaded the archive from.
 
 ### 3.5 Verifying that the archive is intact (before extracting it)
@@ -489,7 +500,8 @@ sha256sum -c minibolt-update-scripts-1.1.tar.gz.sha256
 - `FAILED` or `No such file or directory` → the transfer is incomplete or corrupted: **transfer it again** (both files) and repeat.
 - In any case, compare the hash with the one **published by whoever gave you the package** (in the message, on the release page, in the README): that way you also verify that you received the right file and not a different copy.
 
-> [!note] What this check protects against (and what it does not)
+> [!NOTE]
+> What this check protects against (and what it does not)
 > The `.sha256` is there to catch a **transfer that went wrong** or an archive modified by mistake. It does **not** prove the authenticity of the package: whoever can alter the archive can alter its `.sha256` too. That requires a **signature** from whoever distributes it (`gpg --verify`, if whoever hands it to you provides one). Always verify the hash you were given over a channel other than the one you downloaded the archive from.
 
 ### 3.6 Extracting and verifying the files
@@ -503,7 +515,8 @@ sha256sum -c SHA256SUMS.txt                         # tutte le righe devono dire
 
 Here you check the **individual files** inside the archive (`SHA256SUMS.txt` is the internal manifest). If a line says `FAILED`, that file is corrupted: extract again from an archive you have just transferred again and repeat.
 
-> [!warning] Do not paste the script text into the shell
+> [!WARNING]
+> Do not paste the script text into the shell
 > Long lines get broken in the copy/paste and produce nonsense errors like `line 201: 201: command not found`. Always transfer the **files** (or the archive) and verify with `sha256sum -c`.
 
 ---
@@ -602,7 +615,8 @@ Usage rules:
 
 ## 7. Gotchas and FAQ
 
-> [!warning] Electrs 0.12 requires `rest=1` on bitcoind and a reindex
+> [!WARNING]
+> Electrs 0.12 requires `rest=1` on bitcoind and a reindex
 > Electrs **0.12.0** moved to the `bindex` engine, which (1) requires **Bitcoin Core 31+**, (2) uses the **REST** interface of bitcoind → you need **`rest=1`** in `bitcoin.conf`, and (3) has a **new index format → it must be reindexed**.
 > Symptom when `rest=1` is missing: `GET http://127.0.0.1:8332/rest/blockhashbyheight/0.bin failed: StatusCode(404)` → `failed to open index` → service in `failed`. With 0.11.x this did not happen, because REST was not used.
 
@@ -621,7 +635,8 @@ journalctl -fu electrs
 
 Until the index is complete, wallets and explorers throw errors on balances and addresses: that is normal. The old index you set aside is space to reclaim **after** the new indexing has reached the end.
 
-> [!warning] `electrs` dies with `Too many open files` during indexing
+> [!WARNING]
+> `electrs` dies with `Too many open files` during indexing
 > The soft limit on open files is **1024**, but RocksDB (`max_open_files=-1`) keeps **one file open for every SST** of the index — on a real index that is thousands (≈3,700 files / ≈77 GB in the case that gave rise to this preflight). The process runs out of descriptors and stops. The unit of the guide does not set `LimitNOFILE`, so the effective limit stays at the default. Remedy (once only):
 >
 > ```bash

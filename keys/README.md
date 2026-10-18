@@ -1,4 +1,5 @@
-> [!note] 🇬🇧 [English version ↓](#english-version)
+> [!NOTE]
+> 🇬🇧 [English version ↓](#english-version)
 
 # Chiave pubblica di firma
 
