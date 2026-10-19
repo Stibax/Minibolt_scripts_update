@@ -2,7 +2,7 @@
 
 # Chiave pubblica di firma
 
-`stibax-minibolt.asc` è la chiave con cui vengono firmati i tag e gli archivi di
+`vladx-minibolt.asc` è la chiave con cui vengono firmati i tag e gli archivi di
 questo repository.
 
 | Campo | Valore |
@@ -19,7 +19,7 @@ questo repository.
    ```
    gpg --keyserver hkps://keys.openpgp.org --recv-keys 8CE3522D2DDF1EEE534919A4476EC75008474F71
    ```
-2. Il file `keys/stibax-minibolt.asc` di questo repository (comodo, ma è servito
+2. Il file `keys/vladx-minibolt.asc` di questo repository (comodo, ma è servito
    da GitHub: da solo non prova niente sulla chiave — confrontane il **fingerprint**
    con quello pubblicato su keys.openpgp.org, o con quello sul sito dell'autore).
 

@@ -59,7 +59,7 @@ grep -q "^## ${VERSION} " CHANGELOG.md \
   || echo "    ATTENZIONE: CHANGELOG.md non ha una sezione '## ${VERSION}'"
 
 # 3) i file ci sono e la sintassi e' valida
-for f in "${SCRIPTS[@]}" "${EXTRA[@]}" keys/stibax-minibolt.asc keys/README.md keys/README.en.md; do
+for f in "${SCRIPTS[@]}" "${EXTRA[@]}" keys/vladx-minibolt.asc keys/README.md keys/README.en.md; do
   [ -f "$f" ] || die "file mancante: $f"
 done
 for f in "${SCRIPTS[@]}"; do bash -n "$f" || die "sintassi non valida: $f"; done
@@ -70,7 +70,7 @@ STAGE="dist/minibolt-update"
 rm -rf dist
 mkdir -p "$STAGE/keys"
 cp "${SCRIPTS[@]}" "${EXTRA[@]}" "$STAGE/"
-cp keys/stibax-minibolt.asc keys/README.md keys/README.en.md "$STAGE/keys"
+cp keys/vladx-minibolt.asc keys/README.md keys/README.en.md "$STAGE/keys"
 chmod +x "$STAGE"/*.sh
 
 # 5) manifest interno (il nome dei file e' relativo alla radice dell'archivio)
@@ -104,6 +104,6 @@ echo "  2) carica come asset della release:"
 echo "       dist/${TARNAME}"
 echo "       dist/${TARNAME}.sha256"
 echo "       dist/${TARNAME}.asc"
-echo "       keys/stibax-minibolt.asc"
+echo "       keys/vladx-minibolt.asc"
 echo "  3) tag firmato sullo stesso commit:"
 echo "       git tag -s v${VERSION} -m \"minibolt-update-scripts ${VERSION}\" ${COMMIT}"

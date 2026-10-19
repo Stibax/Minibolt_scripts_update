@@ -50,14 +50,14 @@ What they do not do:
 
 ## Repository security posture
 
-It is not only the package that is verifiable: the repository too is configured so that what you have already downloaded **cannot change under your feet**.
+It is not only the package that is verifiable: the repository too is configured so that what you have already downloaded **can no longer be modified afterwards**.
 
 | Setting | State | Why |
 |---|---|---|
 | **Immutable releases** | enabled | a published release, with its assets, can no longer be modified or deleted: if a change is needed a new version is published, and 1.1 stays the one you verified |
 | **`main protected` ruleset** | enabled | `main` cannot be deleted or rewritten with a force-push; normal pushes remain possible |
 | **`tag v*` ruleset** | enabled | tags cannot be moved to another commit or deleted, and they **must** be signed (`Require signed commits`): a tag signed once cannot become another commit |
-| **Actions disabled** | — | no CI: an automation that signed would need the private key in the GitHub secrets, that is, the only thing that must not leave the smartcard |
+| **Actions disabled** | — | no automated pipeline — what GitHub calls *Actions*, or **CI** (*continuous integration*: builds and tests triggered on every push). There is nothing to build here, and an automation that signed would need the private key in the GitHub secrets: the only thing that must not leave the smartcard |
 | **Secret scanning + push protection** | enabled | if one day a file with a secret ended up in a commit, GitHub stops the push |
 | **Private vulnerability reporting** | enabled | the private channel to report a problem, without opening a public issue |
 | **No collaborators, no tokens** | — | the only write access is a **deploy key limited to this repository** (not to the account) |

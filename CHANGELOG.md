@@ -1,5 +1,19 @@
 # Changelog
 
+## Non rilasciato (in preparazione per la 1.2)
+
+### Documentazione
+
+- `README.md`/`README.en.md`, `SECURITY.md`/`SECURITY.en.md`, `keys/README.md`/`keys/README.en.md`: **un file per lingua** (prima la versione inglese stava in fondo allo stesso file), con il rimando all'altra lingua in prima riga.
+- Nuova sezione in **§5**: *perché l'aggiornamento di electrs può fallire* — i due guasti (bindex → `rest=1` + reindicizzazione; `Too many open files` → `LimitNOFILE`), con le versioni **0.11.1 → 0.12.0**, i rimedi, **chi li applica** (lo script o a mano) e le **fonti**. I due callout duplicati in §7 ora rimandano lì.
+- **§3**: la chiave pubblica con tre modi di importazione (dal file, dal keyserver, dal solo fingerprint), la chiave aggiunta ai trasferimenti `scp`/`rsync`, la spiegazione di cosa significa `latest`, l'alternativa `wget` e il link copiato col tasto destro dalla release, e il **percorso di estrazione** (`/home/admin/minibolt-update/`) in evidenza.
+- Chiarito **cosa fanno gli script da soli e cosa resta da fare a mano**, e spiegato il termine *preflight* (controlli preliminari).
+- Tolta dal README la nota sul comportamento con Ctrl-C (dettaglio interno, non utile a chi usa gli script).
+
+### Cambi
+
+- Il file della chiave pubblica passa da `keys/stibax-minibolt.asc` a **`keys/vladx-minibolt.asc`**: il nome segue l'UID `Vladx`. Nella release **1.1** l'asset si chiama ancora `stibax-minibolt.asc`.
+
 ## 1.1 — 2026-10-18
 
 Correzioni nate dall'uso reale su un nodo MiniBolt (Ubuntu 22.04) il 2026-10-16.
