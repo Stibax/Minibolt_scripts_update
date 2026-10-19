@@ -201,6 +201,35 @@ else
   exit 1
 fi
 
+# --- rest=1: obbligatorio da electrs 0.12 (il motore bindex usa l'interfaccia REST di bitcoind)
+if [ "$(printf '%s\n%s\n' "0.12" "$VERSION" | sort -V | head -n1)" = "0.12" ]; then
+  step "Controllo preliminare - rest=1 su bitcoind (obbligatorio da electrs 0.12)"
+  note "electrs 0.12 e' passato al motore bindex, che interroga bitcoind via REST:"
+  note "senza 'rest=1' il servizio non parte (404 su /rest/blockhashbyheight/0.bin)."
+  BTC_CONF=/data/bitcoin/bitcoin.conf
+  if sudo grep -qE '^[[:space:]]*rest=1([[:space:]]|$)' "$BTC_CONF" 2>/dev/null; then
+    ok "rest=1 presente in $BTC_CONF."
+  else
+    warn "rest=1 ASSENTE (o non leggibile) in $BTC_CONF: electrs $VERSION non partira'."
+    note "Sintomo nel journal:"
+    note "  GET http://127.0.0.1:8332/rest/blockhashbyheight/0.bin failed: StatusCode(404)"
+    note "  -> failed to open index -> electrs.service: Failed with result 'exit-code'"
+    note ""
+    note "Rimedio (a mano: lo script NON modifica bitcoin.conf) - vedi README, sezione 5:"
+    note "  sudo cp $BTC_CONF $BTC_CONF.bak-\$(date +%F)"
+    note "  sudo nano $BTC_CONF            # aggiungi:  rest=1"
+    note "  sudo systemctl restart bitcoind"
+    note "  curl -s http://127.0.0.1:8332/rest/blockhashbyheight/0.bin | xxd -p -c 32"
+    note "Inoltre il formato dell'indice e' cambiato: il vecchio indice va accantonato"
+    note "  (sudo mv /data/electrs/db /data/electrs/db.electrs-0.11-\$(date +%F))"
+    note "e rifatto da zero: ore di indicizzazione."
+    if ! confirm "Continuo lo stesso (aggiungerai rest=1 tu, poi rilancerai)?" N; then
+      die "Interrotto prima di compilare: aggiungi rest=1 a $BTC_CONF e rilancia."
+    fi
+    warn "Proseguo: se rest=1 manca davvero, electrs non ripartira' alla fine dello script."
+  fi
+fi
+
 if [ -e /tmp/electrs ]; then
   if confirm "Esiste gia' /tmp/electrs: lo elimino?" S; then run sudo rm -r /tmp/electrs; else die "Rimuovi /tmp/electrs e rilancia."; fi
 fi

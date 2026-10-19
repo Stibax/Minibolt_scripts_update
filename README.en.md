@@ -292,7 +292,7 @@ Two different failures that look alike only because in both cases `electrs` ends
 
 | | Symptom | Cause | Fix | Who applies it |
 |---|---|---|---|---|
-| **A** | in the journal `failed to open index` and `GET http://127.0.0.1:8332/rest/blockhashbyheight/0.bin failed: StatusCode(404)` | electrs **0.12.0** moved to the `bindex` engine: it uses the **REST interface** of bitcoind, requires **Bitcoin Core 31+** and has a **new index format** | `rest=1` in `bitcoin.conf` + **reindexing** | **you, by hand** — the script does not touch them |
+| **A** | in the journal `failed to open index` and `GET http://127.0.0.1:8332/rest/blockhashbyheight/0.bin failed: StatusCode(404)` | electrs **0.12.0** moved to the `bindex` engine: it uses the **REST interface** of bitcoind, requires **Bitcoin Core 31+** and has a **new index format** | `rest=1` in `bitcoin.conf` + **reindexing** | **you, by hand** for adding it and reindexing; from 1.2 the script **checks** `rest=1` and stops if it is missing |
 | **B** | `Too many open files (os error 24)`: the process dies halfway through indexing | the **soft limit on descriptors** is 1024 and RocksDB keeps **one file open per SST** of the index (thousands), because the default of `max_open_files` is `-1` | systemd drop-in `LimitNOFILE=65536` | **the script**, at step 0 (it asks for confirmation) |
 
 **Versions.** The jump that changes the rules is **0.11.1 → 0.12.0**. Failure **A** exists *only* from 0.12.0 onwards: 0.11.x did not use REST and worked with the same configuration. Failure **B** does not depend on the version, it depends on **how big the index is**: it shows up when electrs tries to open more files than the process is allowed.
@@ -318,6 +318,8 @@ journalctl -fu electrs
 ```
 
 `bitcoin.conf` is edited with `nano` (or `sudo -u bitcoin nano`) and **not** with `sudo sed -i`: `sed -i` recreates the file owned by `root` and `bitcoind` no longer starts.
+
+From **1.2** the script **checks** `rest=1` before compiling (once it knows which version to install): if it is missing, it shows you the symptom and stops there — instead of letting you compile for twenty minutes and find a dead service at the end. It does **not** modify `bitcoin.conf`: that stays in your hands, because it is a `bitcoind` file with delicate permissions.
 
 Until the index is complete, wallets and explorers throw errors on balances and addresses: that is normal. The space of the old index is reclaimed **after** the new indexing has reached the end.
 

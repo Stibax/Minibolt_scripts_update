@@ -2,6 +2,10 @@
 
 ## Non rilasciato (in preparazione per la 1.2)
 
+### Script
+
+- `mb-update-electrs.sh`: **controllo di `rest=1`** quando la versione di destinazione è ≥ 0.12 (motore `bindex`). Se manca, lo script mostra il sintomo nel journal e si ferma **prima di compilare**, invece di lasciare `electrs` in `failed` alla fine. `bitcoin.conf` **non** viene modificato: l'aggiunta e la reindicizzazione restano manuali.
+
 ### Documentazione
 
 - `README.md`/`README.en.md`, `SECURITY.md`/`SECURITY.en.md`, `keys/README.md`/`keys/README.en.md`: **un file per lingua** (prima la versione inglese stava in fondo allo stesso file), con il rimando all'altra lingua in prima riga.

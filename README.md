@@ -292,7 +292,7 @@ Due guasti diversi, che si somigliano solo perché in entrambi i casi `electrs` 
 
 | | Sintomo | Causa | Rimedio | Chi lo applica |
 |---|---|---|---|---|
-| **A** | nel journal `failed to open index` e `GET http://127.0.0.1:8332/rest/blockhashbyheight/0.bin failed: StatusCode(404)` | electrs **0.12.0** è passato al motore `bindex`: usa l'**interfaccia REST** di bitcoind, richiede **Bitcoin Core 31+** e ha un **formato di indice nuovo** | `rest=1` in `bitcoin.conf` + **reindicizzazione** | **tu, a mano** — lo script non li tocca |
+| **A** | nel journal `failed to open index` e `GET http://127.0.0.1:8332/rest/blockhashbyheight/0.bin failed: StatusCode(404)` | electrs **0.12.0** è passato al motore `bindex`: usa l'**interfaccia REST** di bitcoind, richiede **Bitcoin Core 31+** e ha un **formato di indice nuovo** | `rest=1` in `bitcoin.conf` + **reindicizzazione** | **tu, a mano** per aggiunta e reindicizzazione; dalla 1.2 lo script **controlla** `rest=1` e si ferma se manca |
 | **B** | `Too many open files (os error 24)`: il processo muore a metà indicizzazione | il **soft limit dei descrittori** è 1024 e RocksDB tiene aperto **un file per ogni SST** dell'indice (migliaia), perché il default di `max_open_files` è `-1` | drop-in systemd `LimitNOFILE=65536` | **lo script**, al Passo 0 (chiede conferma) |
 
 **Versioni.** Il salto che cambia le regole è **0.11.1 → 0.12.0**. Il guasto **A** esiste *solo* a partire dalla 0.12.0: la 0.11.x non usava REST e con la stessa configurazione funzionava. Il guasto **B** non dipende dalla versione, dipende da **quanto è grande l'indice**: si manifesta quando electrs prova ad aprire più file di quanti il processo può averne.
@@ -318,6 +318,8 @@ journalctl -fu electrs
 ```
 
 `bitcoin.conf` si modifica con `nano` (o `sudo -u bitcoin nano`) e **non** con `sudo sed -i`: `sed -i` ricrea il file con proprietario `root` e `bitcoind` non riparte più.
+
+Dalla **1.2** lo script **controlla** `rest=1` prima di compilare (quando ha già chiesto quale versione installare): se manca, ti mostra il sintomo e si ferma lì — invece di lasciarti compilare per venti minuti e trovare il servizio morto alla fine. **Non modifica `bitcoin.conf`**: quello resta in mano tua, perché è un file di `bitcoind` con permessi delicati.
 
 Finché l'indice non è completo, wallet ed explorer danno errori su saldi e indirizzi: è normale. Lo spazio del vecchio indice si recupera **dopo** che la nuova indicizzazione è arrivata in fondo.
 
