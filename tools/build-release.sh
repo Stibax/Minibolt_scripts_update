@@ -55,7 +55,7 @@ for r in README.md README.en.md; do
   grep -q "minibolt-update-scripts-${VERSION}.tar.gz" "$r" \
     || die "${r} non cita la versione ${VERSION}: aggiorna i comandi di download e riprova"
 done
-grep -q "^## ${VERSION} " CHANGELOG.md \
+grep -qE "^## ${VERSION}([[:space:]]|$)" CHANGELOG.md \
   || echo "    ATTENZIONE: CHANGELOG.md non ha una sezione '## ${VERSION}'"
 
 # 3) i file ci sono e la sintassi e' valida
