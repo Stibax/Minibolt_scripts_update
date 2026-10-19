@@ -44,10 +44,17 @@ echo "    commit: ${COMMIT}"
 # 1b) una release pubblicata e' immutabile: se il tag esiste, questo archivio non
 #     sarebbe quello che la gente ha scaricato -> serve un numero di versione nuovo
 if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
-  NEXT="${VERSION%.*}.$(( ${VERSION##*.} + 1 ))"
-  die "il tag v${VERSION} esiste già: quella release è pubblicata e immutabile.
+  if [ "${MB_ALLOW_REBUILD:-0}" = "1" ]; then
+    # serve a chi VERIFICA una release pubblicata: ricostruisce dal tag e confronta l'hash
+    printf 'ATTENZIONE: stai ricostruendo v%s, release gia pubblicata.\n' "$VERSION" >&2
+    printf '            Serve solo a verificare l archivio: NON pubblicare questo file.\n' >&2
+  else
+    NEXT="${VERSION%.*}.$(( ${VERSION##*.} + 1 ))"
+    die "il tag v${VERSION} esiste già: quella release è pubblicata e immutabile.
       Ricostruirla qui darebbe un archivio DIVERSO con lo stesso nome.
-      Aggiorna CHANGELOG e README (comandi di download) a ${NEXT} e riprova."
+      Aggiorna CHANGELOG e README (comandi di download) a ${NEXT} e riprova.
+      Per VERIFICARE una release esistente: MB_ALLOW_REBUILD=1 tools/build-release.sh ${VERSION}"
+  fi
 fi
 
 # 2) la versione deve comparire nel README (i comandi di download la citano)
@@ -71,12 +78,17 @@ rm -rf dist
 mkdir -p "$STAGE/keys"
 cp "${SCRIPTS[@]}" "${EXTRA[@]}" "$STAGE/"
 cp keys/vladx-minibolt.asc keys/README.md keys/README.en.md "$STAGE/keys"
-chmod +x "$STAGE"/*.sh
 
 # 5) manifest interno (il nome dei file e' relativo alla radice dell'archivio)
 ( cd "$STAGE" && find . -type f ! -name SHA256SUMS.txt -printf '%P\n' \
     | LC_ALL=C sort | xargs sha256sum > SHA256SUMS.txt )
 echo "    manifest: $(wc -l < "$STAGE/SHA256SUMS.txt") file verificabili"
+
+# 5b) permessi normalizzati DOPO il manifest (che altrimenti eredita l'umask):
+# senza questo passo l'archivio cambia byte a seconda di chi compila.
+find "$STAGE" -type d -exec chmod 755 {} +
+find "$STAGE" -type f -exec chmod 644 {} +
+chmod 755 "$STAGE"/*.sh          # 755 esplicito: "chmod +x" rispetta l'umask
 
 # 6) archivio, riproducibile: stesso contenuto -> stessi byte (nessun timestamp/uid/orario)
 TARNAME="minibolt-update-scripts-${VERSION}.tar.gz"
