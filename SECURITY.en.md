@@ -9,7 +9,7 @@
 | UID | `Vladx <vladx@vladtech.org>` |
 | Fingerprint | `8CE3 522D 2DDF 1EEE 5349  19A4 476E C750 0847 4F71` |
 | Published on | [keys.openpgp.org](https://keys.openpgp.org/search?q=8CE3522D2DDF1EEE534919A4476EC75008474F71) |
-| Private | **OpenPGP smartcard** (Nitrokey `000F 37D46AC3`): it does not exist on disk |
+| Private | **OpenPGP smartcard** (Nitrokey): it does not exist on disk |
 
 The `v*` tags and the release archives are signed with this key. For the full
 verification (three levels: signature, archive, contents) see the **[README](README.en.md)**:

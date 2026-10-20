@@ -11,7 +11,7 @@ this repository are signed.
 | Fingerprint | `8CE3 522D 2DDF 1EEE 5349  19A4 476E C750 0847 4F71` |
 | Algorithm | ed25519 (primary, `[SC]`), cv25519 (`[E]`), rsa3072 (`[A]`) |
 | Created | 2026-05-03 |
-| Where the private key lives | **OpenPGP smartcard** (Nitrokey), serial `000F 37D46AC3` — it does not exist on disk |
+| Where the private key lives | **OpenPGP smartcard** (Nitrokey) — it does not exist on disk |
 
 ## Where to get it (in order of preference)
 

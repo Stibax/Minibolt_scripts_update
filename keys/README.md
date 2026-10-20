@@ -11,7 +11,7 @@ questo repository.
 | Fingerprint | `8CE3 522D 2DDF 1EEE 5349  19A4 476E C750 0847 4F71` |
 | Algoritmo | ed25519 (primaria, `[SC]`), cv25519 (`[E]`), rsa3072 (`[A]`) |
 | Creata | 2026-05-03 |
-| Dove vive la privata | **smartcard OpenPGP** (Nitrokey), seriale `000F 37D46AC3` — non esiste su disco |
+| Dove vive la privata | **smartcard OpenPGP** (Nitrokey) — non esiste su disco |
 
 ## Da dove prenderla (in ordine di preferenza)
 
